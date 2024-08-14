@@ -3,7 +3,9 @@
 
 
 <!-- Mirrored from themewagon.github.io/Gradient-Able-free-bootstrap-admin-template/auth-sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 14 Aug 2024 00:54:36 GMT -->
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+
 <head>
     <title>Gradient Able bootstrap admin template by codedthemes </title>
     <!-- HTML5 Shim and Respond.js IE9 support of HTML5 elements and media queries -->
@@ -16,12 +18,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="description" content="Gradient Able Bootstrap admin template made using Bootstrap 4. The starter version of Gradient Able is completely free for personal project." />
-    <meta name="keywords" content="free dashboard template, free admin, free bootstrap template, bootstrap admin template, admin theme, admin dashboard, dashboard template, admin template, responsive" />
+    <meta name="description"
+        content="Gradient Able Bootstrap admin template made using Bootstrap 4. The starter version of Gradient Able is completely free for personal project." />
+    <meta name="keywords"
+        content="free dashboard template, free admin, free bootstrap template, bootstrap admin template, admin theme, admin dashboard, dashboard template, admin template, responsive" />
     <meta name="author" content="codedthemes">
     <!-- Favicon icon -->
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
-    <!-- Google font--><link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet">
+    <!-- Google font-->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600" rel="stylesheet">
     <!-- Required Fremwork -->
     <link rel="stylesheet" type="text/css" href="assets/css/bootstrap/css/bootstrap.min.css">
     <!-- themify-icons line icon -->
@@ -33,7 +38,7 @@
 </head>
 
 <body class="fix-menu">
-       <!-- Pre-loader start -->
+    <!-- Pre-loader start -->
     <div class="theme-loader">
         <div class="loader-track">
             <div class="loader-bar"></div>
@@ -47,7 +52,7 @@
                 <div class="col-sm-12">
                     <!-- Authentication card start -->
                     <div class="signup-card card-block auth-body mr-auto ml-auto">
-                        <form class="md-float-material">
+                        <form class="md-float-material" id="userRegistration">
                             <div class="text-center">
                                 <img src="assets/images/logo.png" alt="logo.png">
                             </div>
@@ -57,30 +62,36 @@
                                         <h3 class="text-center txt-primary">Sign up. It is fast and easy.</h3>
                                     </div>
                                 </div>
-                                <hr/>
+                                <hr />
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Choose Username">
+                                    <input type="text" class="form-control" id="username" name="username"
+                                        placeholder="Choose Username">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Your Email Address">
+                                    <input type="text" class="form-control" id="email" name="email"
+                                        placeholder="Your Email Address">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Choose Password">
+                                    <input type="password" class="form-control" id="password" name="password"
+                                        placeholder="Choose Password">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Confirm Password">
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword"
+                                        placeholder="Confirm Password">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="row m-t-25 text-left">
                                     <div class="col-md-12">
                                         <div class="checkbox-fade fade-in-primary">
                                             <label>
-                                                <input type="checkbox" value="">
-                                                <span class="cr"><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
-                                                <span class="text-inverse">I read and accept <a href="#">Terms &amp; Conditions.</a></span>
+                                                <input type="checkbox" value="" id="termsConditions" name="termsConditions">
+                                                <span class="cr"><i
+                                                        class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
+                                                <span class="text-inverse">I read and accept <a href="#">Terms
+                                                        &amp; Conditions.</a></span>
                                             </label>
                                         </div>
                                     </div>
@@ -88,18 +99,23 @@
                                         <div class="checkbox-fade fade-in-primary">
                                             <label>
                                                 <input type="checkbox" value="">
-                                                <span class="cr"><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
-                                                <span class="text-inverse">Send me the <a href="#!">Newsletter</a> weekly.</span>
+                                                <span class="cr"><i
+                                                        class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
+                                                <span class="text-inverse">Send me the <a href="#!">Newsletter</a>
+                                                    weekly.</span>
                                             </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row m-t-30">
                                     <div class="col-md-12">
-                                        <button type="button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign up now.</button>
+                                        <button type="submit"
+                                            class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20" name="register">Sign
+                                            up now.</button>
+                                            <input type="hidden" name="type" value="0" />
                                     </div>
                                 </div>
-                                <hr/>
+                                <hr />
                                 <div class="row">
                                     <div class="col-md-10">
                                         <p class="text-inverse text-left m-b-0">Thank you and enjoy our website.</p>
@@ -180,4 +196,25 @@
 
 
 <!-- Mirrored from themewagon.github.io/Gradient-Able-free-bootstrap-admin-template/auth-sign-up.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 14 Aug 2024 00:54:36 GMT -->
+
 </html>
+
+<script>
+    $('#userRegistration').on('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        var formData = $(this).serialize(); // Serialize form data
+        $.ajax({
+            url: '/dwexchange/User/userFunctions.php', // Replace with your server URL
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                // Handle success
+                console.log('Form submitted successfully:', response);
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+                console.error('Form submission failed:', error);
+            }
+        });
+    });
+</script>

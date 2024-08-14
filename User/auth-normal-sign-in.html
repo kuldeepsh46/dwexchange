@@ -49,7 +49,7 @@
                 <div class="col-sm-12">
                     <!-- Authentication card start -->
                     <div class="login-card card-block auth-body mr-auto ml-auto">
-                        <form class="md-float-material">
+                        <form class="md-float-material" id="userSignin">
                             <div class="text-center">
                                 <img src="assets/images/logo.png" alt="logo.png">
                             </div>
@@ -61,11 +61,11 @@
                                 </div>
                                 <hr/>
                                 <div class="input-group">
-                                    <input type="email" class="form-control" placeholder="Your Email Address">
+                                    <input type="email" class="form-control" placeholder="Your Email Address" id="email" name="email">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Password">
+                                    <input type="password" class="form-control" placeholder="Password" id="password" name="password">
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="row m-t-25 text-left">
@@ -84,7 +84,8 @@
                                 </div>
                                 <div class="row m-t-30">
                                     <div class="col-md-12">
-                                        <button type="button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign in</button>
+                                        <button type="submit" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign in</button>
+                                        <input type="hidden" name="type" value="1" />
                                     </div>
                                 </div>
                                 <hr/>
@@ -170,3 +171,28 @@
 
 <!-- Mirrored from themewagon.github.io/Gradient-Able-free-bootstrap-admin-template/auth-normal-sign-in.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 14 Aug 2024 00:54:32 GMT -->
 </html>
+<script>
+    $('#userSignin').on('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission
+        var formData = $(this).serialize(); // Serialize form data
+        $.ajax({
+            url: '/dwexchange/User/userFunctions.php', // Replace with your server URL
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                // Handle success
+                console.log(typeof(response))
+                console.log('Form submitted successfully:', response);
+                if (response.status == 1) {
+                    console.log(3)
+                    window.location.href = 'index.php';
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle error
+                console.error('Form submission failed:', error);
+            }
+        });
+    });
+</script>
