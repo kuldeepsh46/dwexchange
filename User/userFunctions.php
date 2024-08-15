@@ -6,7 +6,7 @@ if (isset($_POST)) {
     if ($_POST['type'] == 0) {
         registerUser($_POST);
     } elseif ($_POST['type'] == 1) {
-        userSignin($_POST);
+        userSignin($_POST, 0);
     } elseif ($_POST['type'] == 2) {
         logout();
     }
@@ -37,20 +37,45 @@ function registerUser($data)
         if (isset($stmt)) {
             $stmt->bind_param('sssi', $username, $userEmail, $userPassword, $userType);
             $insertUserData = $stmt->execute();
+            $stmt->close();
             if (!$insertUserData) {
                 $status = 0;
                 $msg = 'Data insertion failed!';
+            } else {
+                $userData = getUser(null, $userEmail);
+                // print_r($userData);
+                // die;
+                $addInitialBonus = $conn->prepare('INSERT INTO wallet (userId, bonusAmount) VALUES (?, ?)');
+                if (isset($addInitialBonus)) {
+                    $bonusAmt = 1;
+                    $userId = $userData['data']['id'];
+                    $addInitialBonus->bind_param('ii', $userId, $bonusAmt);
+            $addInitialBonusSuccess = $addInitialBonus->execute();
+            if (!$addInitialBonusSuccess) {
+                $status = 2;
+                $msg = 'Initial bonus insertion failed!';
+            } else {
+                $status = 1;
+                $msg = 'User Registered and Initial Bonus Added Successfully.';
+                $loginCred = [
+                    'email' => $userEmail,
+                    'password' => $data['password'],
+                ];
+                userSignin($loginCred, 1);
             }
-            $stmt->close();
+            $addInitialBonus->close();
+                }
+            }
+            
         } else {
             $status = 0;
             $msg = 'Data insertion failed!';
         }
     }
-    $response = ['status' => $status, 'msg' => $msg];
-    echo json_encode($response);
+$response = ['status' => $status, 'msg' => $msg];
+echo json_encode($response);
 }
-function userSignin($data)
+function userSignin($data, $check)
 {
     global $conn;
     $status = 1;
@@ -58,49 +83,29 @@ function userSignin($data)
     $userEmail = $data['email'] ?? '';
     $userPassword = $data['password'] ?? '';
     if (!empty($userEmail) && !empty($userPassword)) {
-        // Prepare the SQL statement
-        $stmt = $conn->prepare('SELECT id, username, email, password FROM users WHERE email = ?');
-        if ($stmt === false) {
-            die('Prepare failed: ' . htmlspecialchars($conn->error));
-        }
-        // Bind parameters and execute
-        $stmt->bind_param('s', $userEmail);
-        $stmt->execute();
-        // Store result
-        $stmt->store_result();
-        if ($stmt->num_rows === 1) {
-            // Bind result variable
-            $stmt->bind_result($id, $username, $email, $hashedPassword);
-            $stmt->fetch();
-            // Verify the password
-            if (password_verify($userPassword, $hashedPassword)) {
-                // $userData = $stmt->bind_result($id, $username, $email);
-                // $_SESSION['userLoginInfo'] = $userData;
-                $userData = [
-                    'id' => $id,
-                    'username' => $username,
-                    'email' => $email,
-                    'password' => $hashedPassword
-                ];
-                $_SESSION['userLoginInfo'] = $userData;
+        $userData = getUser(null, $userEmail);
+        // print_r($userData);
+        if ($userData['status'] == 1) {
+            if (password_verify($userPassword, $userData['data']['password'])) {
+                $_SESSION['userLoginInfo'] = $userData['data'];
             } else {
-                // echo 'Invalid email or password.';
-                $status = 0;
-                $msg = 'Invalid email or password.';
+                 $status = 0;
+        $msg = 'Invalid password'; 
             }
         } else {
-            $status = 0;
-            $msg = 'Invalid email or password.';
+         $status = 0;
+        $msg = 'Invalid email.';   
         }
-        // Free result and close statement
-        $stmt->free_result();
-        $stmt->close();
     } else {
         $status = 0;
         $msg = 'Email and password cannot be empty.';
     }
     $response = ['status' => $status, 'msg' => $msg];
-    echo json_encode($response);
+    if ($check == 0) {
+        echo json_encode($response);
+    } else {
+        return $response;
+    }
 }
 function logout()
 {
@@ -114,5 +119,45 @@ function logout()
     }
     $response = ['status' => $status, 'msg' => $msg];
     echo json_encode($response);
+}
+if($_GET['id']) {
+    $id = $_GET['id'];
+    $userData = getUser(null, 'ks671@gmail.com');
+    print_r($userData);
+}
+function getUser($userId, $userEmail) {
+    global $conn;
+    if($userId == null) {
+        $uniqueFieldName = 'email';
+        $uniqueId = $userEmail;
+        $dataType = 's';
+    } else {
+        $uniqueFieldName = 'id';
+        $uniqueId = $userId;
+        $dataType = 'i';
+    }
+    $response = [
+        'status' => 0,
+        'msg' => 'No User Found With Provided Credentials.',
+        'data' => []
+    ];
+// $stmt = $conn->prepare('SELECT * FROM users WHERE ' . $uniqueFieldName . ' = ?');
+$stmt = $conn->prepare('SELECT users.*, wallet.bonusAmount, wallet.amount FROM users LEFT JOIN wallet ON users.id = wallet.userId WHERE users.' . $uniqueFieldName . ' = ?');
+if ($stmt === false) {
+    die('Prepare failed: ' . htmlspecialchars($conn->error));
+}
+$stmt->bind_param($dataType, $uniqueId); // 'i' specifies that the parameter is an integer
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($result->num_rows > 0) {
+        $response = [
+            'status' => 1,
+            'msg' => 'User Found.',
+            'data' => $result->fetch_assoc()
+        ];
+        $status = 1;
+    }
+    $stmt->close();
+    return $response;
 }
 ?>
