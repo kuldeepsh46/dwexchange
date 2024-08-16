@@ -39,8 +39,10 @@ function registerUser($data)
         // echo $data['refCode'];
         // die;
         if (!empty($data['refCode'])) {
+            // echo 5;
             $userRefCode = $data['refCode'];
             $userParentData = getUser(null, null, $userRefCode);
+            // print_r($userParentData);
             $userParentId = $userParentData['data']['id'];
             // echo $userParentId;
             
@@ -49,6 +51,7 @@ function registerUser($data)
         // die;
         $stmt = $conn->prepare('INSERT INTO users (username, email, password, type, sponsorId, parentId) VALUES (?, ?, ?, ?, ?, ?)');
         if (isset($stmt)) {
+            // echo 3;
             $bytes = random_bytes(ceil(10 / 2));
     // Convert bytes to a hexadecimal string
     $token = bin2hex($bytes);
@@ -175,7 +178,7 @@ function getUser($userId, $userEmail, $userRefCode) {
         $uniqueId = $userEmail;
         $dataType = 's';
     } elseif ($userId == null && $userEmail == null) {
-        $uniqueFieldName = 'userRefCode';
+        $uniqueFieldName = 'sponsorId';
         $uniqueId = $userRefCode;
         $dataType = 's';
     } else {
