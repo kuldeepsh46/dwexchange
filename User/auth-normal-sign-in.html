@@ -175,8 +175,11 @@
     $('#userSignin').on('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
         var formData = $(this).serialize(); // Serialize form data
+        var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
         $.ajax({
-            url: '/User/userFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: formData,
             // dataType: 'json',

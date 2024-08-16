@@ -17,8 +17,13 @@ if (isset($_SESSION['userLoginInfo'])) {
         } else if (status == 2) {
             type = 'getDeniedRequests';
         }
+        var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
         $.ajax({
-            url: '/admin/adminFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: {
                 'type': type
@@ -31,7 +36,7 @@ if (isset($_SESSION['userLoginInfo'])) {
                         var actionBtns = '<td>N/A</td>';
                         var updatedBy = 'No action taken yet.';
                         if (item.status == 0) {
-                            actionBtns = '<td><button class="btn btn-success btn-sm" onclick="approveRequest('+ item.id +', '+ item.userId +');">Approve</button><button class="btn btn-danger btn-sm" onclick="denyRequest('+ item.id +', '+ item.userId +')";>Deny</button></td>';
+                            actionBtns = '<td><button class="btn btn-success btn-sm" onclick="approveRequest('+ item.id +', '+ item.userId +', '+ item.amount +');">Approve</button><button class="btn btn-danger btn-sm" onclick="denyRequest('+ item.id +', '+ item.userId +')";>Deny</button></td>';
                         } else {
                             updatedBy = item.updatedBy;
                         }
@@ -105,15 +110,19 @@ if (isset($_SESSION['userLoginInfo'])) {
     </body>
 </html>
 <script>
-function approveRequest(id, userId) {
+function approveRequest(id, userId, amount) {
     console.log(id);
+    var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
     $.ajax({
-            url: '/admin/adminFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: {
                 'type': 'approveRequest',
                 'id': id,
-                'userId': userId
+                'userId': userId,
+                'amount': amount
             },
             // dataType: 'json',
             success: function(response) {
@@ -126,8 +135,11 @@ function approveRequest(id, userId) {
         });
 }
 function denyRequest(id, userId) {
+    var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
     $.ajax({
-            url: '/admin/adminFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: {
                 'type': 'denyRequest',
@@ -147,15 +159,19 @@ function denyRequest(id, userId) {
     $('#logout').on('click', function(event) {
         event.preventDefault(); // Prevent the default form submission
         // var formData = $(this).serialize(); // Serialize form data
+        var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
+        console.log(url)
         $.ajax({
-            url: '/User/userFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: {
                 'type': 2
             },
             dataType: 'json',
             success: function(response) {
-                window.location.href = '../dwe.html';
+                window.location.href = '../dwe.php';
             },
             error: function(xhr, status, error) {
                 // Handle error
