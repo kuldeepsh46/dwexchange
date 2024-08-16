@@ -1,7 +1,7 @@
 <?php
-// print_r($_POST);
 session_start(); // Start the session
 include '../db/dbConn.php';
+include('../config.php');
 if (isset($_POST)) {
     if ($_POST['type'] == 0) {
         registerUser($_POST);
@@ -104,7 +104,8 @@ echo json_encode($response);
 }
 function userSignin($data, $check)
 {
-    global $conn;
+    // global $conn;
+    $conn = $GLOBALS['conn'];
     $status = 1;
     $msg = 'Login Successfull!';
     $userEmail = $data['email'] ?? '';
@@ -154,22 +155,6 @@ function logout()
     }
     $response = ['status' => $status, 'msg' => $msg];
     echo json_encode($response);
-}
-if($_GET['id']) {
-    $id = $_GET['id'];
-    // $userData = getUser(null, 'ks671@gmail.com');
-    // print_r($userData);
-    // $bytes = random_bytes(ceil(10 / 2));
-    
-    // // Convert bytes to a hexadecimal string
-    // $token = bin2hex($bytes);
-    
-    // // Ensure the token is exactly the desired length
-    // echo substr($token, 0, 10);
-    // $userRefCode = '29b6a6e404';
-    // $userParentData = getUser(null, null, $id);
-    // print_r($userParentData);
-    print_r($_SESSION['userLoginInfo']);
 }
 function getUser($userId, $userEmail, $userRefCode) {
     global $conn;

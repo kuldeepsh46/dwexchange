@@ -69,7 +69,7 @@ $stmt->execute();
 // Check if the update was successful
 if ($stmt->affected_rows > 0) {
     // echo 'Update successful!';
-    updateWallet($data['userId'], $amount, $operator);
+    updateWallet($data['userId'], $data['amount'], '+');
     $response['status'] = 1;
     $response['msg'] = 'Update Successfull';
 }
@@ -140,6 +140,8 @@ function updateWallet($id, $amount, $operator) {
         'status' => 0,
         'msg' => 'Failed to update wallet'
     ];
+    // echo 'UPDATE wallet SET amount = amount '. $operator .' '. $amount .' WHERE userId = ?';
+    // die;
     $stmt = $conn->prepare('UPDATE wallet SET amount = amount '. $operator .' '. $amount .' WHERE userId = ?');
     if ($stmt === false) {
     die('Prepare failed: ' . htmlspecialchars($conn->error));

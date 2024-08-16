@@ -231,9 +231,12 @@ session_start();
 
     // When the user clicks on the "Confirm" button, send the AJAX request
     confirmBtn.onclick = function() {
+        var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
         // var formData = $('#')
         $.ajax({
-            url: '/User/userFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: {
                 'type': 'sendDepositRequest',

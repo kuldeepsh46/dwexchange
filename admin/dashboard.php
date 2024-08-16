@@ -607,15 +607,18 @@ if (isset($_SESSION['userLoginInfo'])) {
     $('#logout').on('click', function(event) {
         event.preventDefault(); // Prevent the default form submission
         // var formData = $(this).serialize(); // Serialize form data
+        var basePath = <?php echo $GLOBALS['basePath']; ?>;
+        // Concatenate the base URL with the path
+        var url = basePath + '/User/userFunctions.php';
         $.ajax({
-            url: '/User/userFunctions.php', // Replace with your server URL
+            url: url, // Replace with your server URL
             type: 'POST',
             data: {
                 'type': 2
             },
             dataType: 'json',
             success: function(response) {
-                window.location.href = '../dwe.html';
+                window.location.href = '../dwe.php';
             },
             error: function(xhr, status, error) {
                 // Handle error
