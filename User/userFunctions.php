@@ -9,6 +9,8 @@ if (isset($_POST)) {
         userSignin($_POST, 0);
     } elseif ($_POST['type'] == 2) {
         logout();
+    } elseif ($_POST['type'] == 'sendDepositRequest') {
+        sendDepositRequest($_POST);
     }
 }
 function registerUser($data)
@@ -33,16 +35,38 @@ function registerUser($data)
         $userEmail = $data['email'];
         $userPassword = password_hash($data['password'], PASSWORD_BCRYPT);
         $userType = $data['type'];
-        $stmt = $conn->prepare('INSERT INTO users (username, email, password, type) VALUES (?, ?, ?, ?)');
+        $userParentId = null;
+        // echo $data['refCode'];
+        // die;
+        if (!empty($data['refCode'])) {
+            $userRefCode = $data['refCode'];
+            $userParentData = getUser(null, null, $userRefCode);
+            $userParentId = $userParentData['data']['id'];
+            // echo $userParentId;
+            
+        }
+        // echo $userParentId;
+        // die;
+        $stmt = $conn->prepare('INSERT INTO users (username, email, password, type, sponsorId, parentId) VALUES (?, ?, ?, ?, ?, ?)');
         if (isset($stmt)) {
-            $stmt->bind_param('sssi', $username, $userEmail, $userPassword, $userType);
+            $bytes = random_bytes(ceil(10 / 2));
+    // Convert bytes to a hexadecimal string
+    $token = bin2hex($bytes);
+    
+    // Ensure the token is exactly the desired length
+    $userRefCode = substr($token, 0, 10);
+            $stmt->bind_param('sssisi', $username, $userEmail, $userPassword, $userType, $userRefCode, $userParentId);
             $insertUserData = $stmt->execute();
+            // if (!empty($data['refCode'])) {
+            //     $currUserId = $conn->insert_id;
+            //     addTeamMember($userParentId, $currUserId);
+            // }
             $stmt->close();
             if (!$insertUserData) {
                 $status = 0;
                 $msg = 'Data insertion failed!';
             } else {
-                $userData = getUser(null, $userEmail);
+                $userData = getUser(null, $userEmail, null);
                 // print_r($userData);
                 // die;
                 $addInitialBonus = $conn->prepare('INSERT INTO wallet (userId, bonusAmount) VALUES (?, ?)');
@@ -82,12 +106,18 @@ function userSignin($data, $check)
     $msg = 'Login Successfull!';
     $userEmail = $data['email'] ?? '';
     $userPassword = $data['password'] ?? '';
+    $response = [];
     if (!empty($userEmail) && !empty($userPassword)) {
-        $userData = getUser(null, $userEmail);
+        $userData = getUser(null, $userEmail, null);
         // print_r($userData);
         if ($userData['status'] == 1) {
             if (password_verify($userPassword, $userData['data']['password'])) {
                 $_SESSION['userLoginInfo'] = $userData['data'];
+                // if ($userData['data']['isParent'] == 1) {
+                    $teamMembers = getTeamMembers($userData['data']['id']);
+                    $_SESSION['userTeamMembers'] = $teamMembers;
+                    $response['data'] = $userData;
+                // }
             } else {
                  $status = 0;
         $msg = 'Invalid password'; 
@@ -100,7 +130,9 @@ function userSignin($data, $check)
         $status = 0;
         $msg = 'Email and password cannot be empty.';
     }
-    $response = ['status' => $status, 'msg' => $msg];
+    // $response = ['status' => $status, 'msg' => $msg, 'data' => ];
+    $response['msg'] = $msg;
+    $response['status'] = $status;
     if ($check == 0) {
         echo json_encode($response);
     } else {
@@ -122,14 +154,29 @@ function logout()
 }
 if($_GET['id']) {
     $id = $_GET['id'];
-    $userData = getUser(null, 'ks671@gmail.com');
-    print_r($userData);
+    // $userData = getUser(null, 'ks671@gmail.com');
+    // print_r($userData);
+    // $bytes = random_bytes(ceil(10 / 2));
+    
+    // // Convert bytes to a hexadecimal string
+    // $token = bin2hex($bytes);
+    
+    // // Ensure the token is exactly the desired length
+    // echo substr($token, 0, 10);
+    // $userRefCode = '29b6a6e404';
+    // $userParentData = getUser(null, null, $id);
+    // print_r($userParentData);
+    print_r($_SESSION['userLoginInfo']);
 }
-function getUser($userId, $userEmail) {
+function getUser($userId, $userEmail, $userRefCode) {
     global $conn;
-    if($userId == null) {
+    if($userId == null && $userRefCode == null) {
         $uniqueFieldName = 'email';
         $uniqueId = $userEmail;
+        $dataType = 's';
+    } elseif ($userId == null && $userEmail == null) {
+        $uniqueFieldName = 'userRefCode';
+        $uniqueId = $userRefCode;
         $dataType = 's';
     } else {
         $uniqueFieldName = 'id';
@@ -142,7 +189,7 @@ function getUser($userId, $userEmail) {
         'data' => []
     ];
 // $stmt = $conn->prepare('SELECT * FROM users WHERE ' . $uniqueFieldName . ' = ?');
-$stmt = $conn->prepare('SELECT users.*, wallet.bonusAmount, wallet.amount FROM users LEFT JOIN wallet ON users.id = wallet.userId WHERE users.' . $uniqueFieldName . ' = ?');
+$stmt = $conn->prepare('SELECT users.*, wallet.bonusAmount, wallet.amount, wallet.updatedAt as lastInvestmentDate FROM users LEFT JOIN wallet ON users.id = wallet.userId WHERE users.' . $uniqueFieldName . ' = ?');
 if ($stmt === false) {
     die('Prepare failed: ' . htmlspecialchars($conn->error));
 }
@@ -159,5 +206,57 @@ $stmt->bind_param($dataType, $uniqueId); // 'i' specifies that the parameter is 
     }
     $stmt->close();
     return $response;
+}
+function addTeamMember($userId, $childUserId) {
+    $stmt = $conn->prepare('SELECT memberIds FROM users WHERE id = ?');
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+
+    // Fetch the result
+    $result = $stmt->get_result();
+    $record = $result->fetch_assoc();
+
+    // Close the statement
+    $stmt->close();
+}
+function getTeamMembers($userId) {
+    global $conn;
+    $stmt = $conn->prepare('SELECT * FROM users WHERE parentId = ?');
+    $stmt->bind_param('i', $userId);
+    $stmt->execute();
+
+    // Fetch the result
+    $result = $stmt->get_result();
+    $records = [];
+    
+    // Traverse all records
+    while ($row = $result->fetch_assoc()) {
+        $records[] = $row;
+    }
+
+    // Close the statement
+    $stmt->close();
+    return $records;
+}
+function sendDepositRequest($data) {
+    global $conn;
+    // print_r($data);
+    $response = [
+        'status' => 0,
+        'msg' => 'Failed to send request.',
+    ];
+    $userId = $_SESSION['userLoginInfo']['id'];
+    $status = 0;
+    $stmt = $conn->prepare('INSERT INTO depositRequests (userid, amount, status) VALUES (?, ?, ?)');
+    $stmt->bind_param('iii', $userId, $data['amount'], $status);
+    $stmt->execute();
+    if ($stmt) {
+        $response = [
+        'status' => 1,
+        'msg' => 'Request send successfully.',
+    ];
+    }
+    $stmt->close();
+    echo json_encode($response);
 }
 ?>
