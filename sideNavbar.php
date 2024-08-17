@@ -1,7 +1,9 @@
 <?php
 // session_start();
-include('config.php');
+// include('config.php');
 if ($_SESSION['userLoginInfo']['type'] == 0) {
+// echo $url;
+// die;
     ?>
     <nav class="pcoded-navbar">
     <div class="pcoded-inner-navbar main-menu">
@@ -23,7 +25,7 @@ if ($_SESSION['userLoginInfo']['type'] == 0) {
                 </a>
                 <ul class="pcoded-submenu">
                     <li class=" ">
-                        <a href="<?php echo $GLOBALS['basePath'] ?>User/investment.php">
+                        <a href="investment.php">
                             <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                             <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Investment</span>
                             <span class="pcoded-mcaret"></span>
@@ -39,7 +41,7 @@ if ($_SESSION['userLoginInfo']['type'] == 0) {
                 </a>
                 <ul class="pcoded-submenu">
                     <li class=" ">
-                        <a href="<?php echo $GLOBALS['basePath'] ?>User/my-team-members.php">
+                        <a href="my-team-members.php">
                             <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                             <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Direct Sponsors</span>
                             <span class="pcoded-mcaret"></span>
@@ -181,7 +183,7 @@ if ($_SESSION['userLoginInfo']['type'] == 0) {
         <div class="pcoded-navigatio-lavel" data-i18n="nav.category.navigation">Layout</div>
         <ul class="pcoded-item pcoded-left-item">
             <li class="active">
-                <a href="dashboard.php">
+                <a href="index-2.html">
                     <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
                     <span class="pcoded-mtext" data-i18n="nav.dash.main">Dashboard</span>
                     <span class="pcoded-mcaret"></span>
@@ -196,21 +198,21 @@ if ($_SESSION['userLoginInfo']['type'] == 0) {
                 </a>
                 <ul class="pcoded-submenu">
                     <li class=" ">
-                        <a href="<?php echo $GLOBALS['basePath'] ?>admin/handleDepositRequests.php?status=0">
+                        <a href="handleDepositRequests.php?status=0">
                             <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                             <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Deposit Requests</span>
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
                     <li class=" ">
-                        <a href="<?php echo $GLOBALS['basePath'] ?>admin/handleDepositRequests.php?status=1">
+                        <a href="handleDepositRequests.php?status=1">
                             <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                             <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Approved Requests</span>
                             <span class="pcoded-mcaret"></span>
                         </a>
                     </li>
                     <li class=" ">
-                        <a href="<?php echo $GLOBALS['basePath'] ?>admin/handleDepositRequests.php?status=2">
+                        <a href="handleDepositRequests.php?status=2">
                             <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                             <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Denied Requests</span>
                             <span class="pcoded-mcaret"></span>
@@ -226,7 +228,7 @@ if ($_SESSION['userLoginInfo']['type'] == 0) {
                 </a>
                 <ul class="pcoded-submenu">
                     <li class=" ">
-                        <a href="<?php echo $GLOBALS['basePath'] ?>User/my-team-members.php">
+                        <a href="/User/my-team-members.php">
                             <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                             <span class="pcoded-mtext" data-i18n="nav.basic-components.alert">Direct Sponsors</span>
                             <span class="pcoded-mcaret"></span>
@@ -362,20 +364,13 @@ if ($_SESSION['userLoginInfo']['type'] == 0) {
 </nav>
     <?php
 }
-
-
-
 ?>
-
-
-
 <script>
     $('#logout').on('click', function(event) {
+        console.log(4)
         event.preventDefault(); // Prevent the default form submission
         // var formData = $(this).serialize(); // Serialize form data
-        var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
+        var url = '../User/userFunctions.php';
         $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',

@@ -1,3 +1,8 @@
+<?php
+$userData = $_SESSION['userLoginInfo'];
+?>
+
+
 <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
     <!-- Google font-->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
@@ -29,7 +34,7 @@
                                 </div>
                             </div>
                             
-                            <a href="dwe.html"><img class="img-fluid" src="assets/images/logo-white.png" alt="Theme-Logo" style="width: 100px; height: auto;" />
+                            <a href="dwe.php"><img class="img-fluid" src="assets/images/logo-white.png" alt="Theme-Logo" style="width: 100px; height: auto;" />
                             <a class="mobile-options">
                                 <i class="ti-more"></i>
                             </a>

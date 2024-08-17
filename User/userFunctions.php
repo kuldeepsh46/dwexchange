@@ -1,7 +1,7 @@
 <?php
+// print_r($_POST);
 session_start(); // Start the session
 include '../db/dbConn.php';
-include('../config.php');
 if (isset($_POST)) {
     if ($_POST['type'] == 0) {
         registerUser($_POST);
@@ -64,8 +64,9 @@ function registerUser($data)
             //     $currUserId = $conn->insert_id;
             //     addTeamMember($userParentId, $currUserId);
             // }
+            // echo 4;
             $stmt->close();
-            if (!$insertUserData) {
+            if ($stmt === false) {
                 $status = 0;
                 $msg = 'Data insertion failed!';
             } else {
@@ -104,8 +105,7 @@ echo json_encode($response);
 }
 function userSignin($data, $check)
 {
-    // global $conn;
-    $conn = $GLOBALS['conn'];
+    global $conn;
     $status = 1;
     $msg = 'Login Successfull!';
     $userEmail = $data['email'] ?? '';
@@ -156,6 +156,22 @@ function logout()
     $response = ['status' => $status, 'msg' => $msg];
     echo json_encode($response);
 }
+// if($_GET['id']) {
+//     $id = $_GET['id'];
+//     // $userData = getUser(null, 'ks671@gmail.com');
+//     // print_r($userData);
+//     // $bytes = random_bytes(ceil(10 / 2));
+    
+//     // // Convert bytes to a hexadecimal string
+//     // $token = bin2hex($bytes);
+    
+//     // // Ensure the token is exactly the desired length
+//     // echo substr($token, 0, 10);
+//     // $userRefCode = '29b6a6e404';
+//     // $userParentData = getUser(null, null, $id);
+//     // print_r($userParentData);
+//     print_r($_SESSION['userLoginInfo']);
+// }
 function getUser($userId, $userEmail, $userRefCode) {
     global $conn;
     if($userId == null && $userRefCode == null) {
@@ -180,8 +196,8 @@ function getUser($userId, $userEmail, $userRefCode) {
 $stmt = $conn->prepare('SELECT users.*, wallet.bonusAmount, wallet.amount, wallet.updatedAt as lastInvestmentDate FROM users LEFT JOIN wallet ON users.id = wallet.userId WHERE users.' . $uniqueFieldName . ' = ?');
 if ($stmt === false) {
     die('Prepare failed: ' . htmlspecialchars($conn->error));
-}
-$stmt->bind_param($dataType, $uniqueId); // 'i' specifies that the parameter is an integer
+} else {
+    $stmt->bind_param($dataType, $uniqueId); // 'i' specifies that the parameter is an integer
     $stmt->execute();
     $result = $stmt->get_result();
     if ($result->num_rows > 0) {
@@ -192,10 +208,13 @@ $stmt->bind_param($dataType, $uniqueId); // 'i' specifies that the parameter is 
         ];
         $status = 1;
     }
+}
+
     $stmt->close();
     return $response;
 }
 function addTeamMember($userId, $childUserId) {
+    global$conn;
     $stmt = $conn->prepare('SELECT memberIds FROM users WHERE id = ?');
     $stmt->bind_param('i', $userId);
     $stmt->execute();

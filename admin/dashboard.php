@@ -1,5 +1,6 @@
 <?php
 session_start(); // Start the session
+include('../config.php');
 if (isset($_SESSION['userLoginInfo'])) {
     $userData = $_SESSION['userLoginInfo'];
     if ($userData['type'] == 1) {
@@ -607,9 +608,12 @@ if (isset($_SESSION['userLoginInfo'])) {
     $('#logout').on('click', function(event) {
         event.preventDefault(); // Prevent the default form submission
         // var formData = $(this).serialize(); // Serialize form data
-        var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
+        var url = '/admin/adminFunctions.php';
+        <?php
+        if ($GLOBALS['basePath'] == 0) {
+            ?>url = 'dwexchange' + url;<?php
+        }
+        ?>
         $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',
@@ -629,11 +633,11 @@ if (isset($_SESSION['userLoginInfo'])) {
 </script>
         <?php
     } else {
-    header('Location: ../dwe.html');
+    header('Location: ../dwe.php');
 exit; // Always use exit() after header redirection to ensure no further code is executed
 }
 } else {
-    header('Location: ../dwe.html');
+    header('Location: ../dwe.php');
 exit; // Always use exit() after header redirection to ensure no further code is executed
 }
 ?>
