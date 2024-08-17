@@ -1,5 +1,6 @@
 <?php
 session_start(); // Start the session
+// include('config.php');
 if (isset($_SESSION['userLoginInfo'])) {
     $userData = $_SESSION['userLoginInfo'];
 ?>
@@ -17,11 +18,12 @@ if (isset($_SESSION['userLoginInfo'])) {
         } else if (status == 2) {
             type = 'getDeniedRequests';
         }
-        var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
+        var url = '/admin/adminFunctions.php';
+        <?php
+        if ($GLOBALS['basePath'] == 0) {
+            ?>url = 'dwexchange' + url;<?php
+        }
+        ?>
         $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',
@@ -112,9 +114,12 @@ if (isset($_SESSION['userLoginInfo'])) {
 <script>
 function approveRequest(id, userId, amount) {
     console.log(id);
-    var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
+    var url = '/admin/adminFunctions.php';
+        <?php
+        if ($GLOBALS['basePath'] == 0) {
+            ?>url = 'dwexchange' + url;<?php
+        }
+        ?>
     $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',
@@ -135,9 +140,12 @@ function approveRequest(id, userId, amount) {
         });
 }
 function denyRequest(id, userId) {
-    var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
+    var url = '/admin/adminFunctions.php';
+        <?php
+        if ($GLOBALS['basePath'] == 0) {
+            ?>url = 'dwexchange' + url;<?php
+        }
+        ?>
     $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',
@@ -159,10 +167,12 @@ function denyRequest(id, userId) {
     $('#logout').on('click', function(event) {
         event.preventDefault(); // Prevent the default form submission
         // var formData = $(this).serialize(); // Serialize form data
-        var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
-        console.log(url)
+        var url = '/User/userFunctions.php';
+        <?php
+        if ($GLOBALS['basePath'] == 0) {
+            ?>url = 'dwexchange' + url;<?php
+        }
+        ?>
         $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',
@@ -182,7 +192,7 @@ function denyRequest(id, userId) {
 </script>
 <?php
 } else {
-    header('Location: ../dwe.html');
+    header('Location: ../dwe.php');
 exit; // Always use exit() after header redirection to ensure no further code is executed
 }
 ?>

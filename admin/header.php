@@ -29,7 +29,7 @@
                                 </div>
                             </div>
                             
-                            <a href="dwe.html"><img class="img-fluid" src="../User/assets/images/logo-white.png" alt="Theme-Logo" style="width: 100px; height: auto;" />
+                            <a href="dwe.php"><img class="img-fluid" src="../User/assets/images/logo-white.png" alt="Theme-Logo" style="width: 100px; height: auto;" />
                             <a class="mobile-options">
                                 <i class="ti-more"></i>
                             </a>

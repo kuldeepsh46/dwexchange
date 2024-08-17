@@ -216,7 +216,7 @@ if (isset($_SESSION['userLoginInfo'])) {
 </html>
 <?php
 } else {
-    header('Location: ../dwe.html');
+    header('Location: ../dwe.php');
 exit; // Always use exit() after header redirection to ensure no further code is executed
 }
 ?>

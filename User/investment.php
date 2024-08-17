@@ -231,10 +231,13 @@ session_start();
 
     // When the user clicks on the "Confirm" button, send the AJAX request
     confirmBtn.onclick = function() {
-        var basePath = <?php echo $GLOBALS['basePath']; ?>;
-        // Concatenate the base URL with the path
-        var url = basePath + '/User/userFunctions.php';
         // var formData = $('#')
+        var url = '/User/userFunctions.php';
+        <?php
+        if ($GLOBALS['basePath'] == 0) {
+            ?>url = 'dwexchange' + url;<?php
+        }
+        ?>
         $.ajax({
             url: url, // Replace with your server URL
             type: 'POST',
@@ -248,6 +251,7 @@ session_start();
                 console.log(typeof(response), response)
                 response = JSON.parse(response);
                 if (response.status == 1) {
+                    console.log(4)
                     window.location.href = 'User/index.php';
                 }
             },
